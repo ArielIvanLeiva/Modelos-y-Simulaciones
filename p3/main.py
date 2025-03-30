@@ -203,10 +203,9 @@ print(f"P(Vaya a caja i | T > 4 minutos) ~ {b_aprox}")
 # Ejercicio 5
 
 from numpy.random import uniform
-from numpy import pi, vectorize, log
+from numpy import log
 from statistics import mean
 import pandas as pd
-from scipy.integrate import quad
 import sympy as sp
 from IPython.display import display, Math
 
