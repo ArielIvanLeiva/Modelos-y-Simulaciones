@@ -15,10 +15,11 @@
 # %%
 # Ejercicio 1
 
+
 def nthNums(suc_fun, seed, n):
     x = seed
     nums = [x]
-    
+
     for i in range(n):
         x = suc_fun(x)
         nums.append(x)
@@ -26,13 +27,14 @@ def nthNums(suc_fun, seed, n):
     return nums
 
 
-
 # %%
 def suc(x):
-    return ((x*x)%1000000)//100
+    return ((x * x) % 1000000) // 100
+
 
 def nthVon(seed, n):
     return nthNums(suc, seed, n)
+
 
 # a)
 seeds = [3792, 1004, 2100, 1234]
@@ -44,10 +46,12 @@ secuences
 # %%
 # b)
 def suc_gen(a, b, m, x):
-    return (a*x+b)%m
+    return (a * x + b) % m
+
 
 def suc(x):
     return suc_gen(5, 4, 2**5, x)
+
 
 seeds = [4, 50]
 secuences = [nthNums(suc, seed, 10) for seed in seeds]
@@ -56,8 +60,8 @@ secuences
 # El período de la primer secuencia es 8
 # Y el de la segunda secuencia es 7, comenzando desde el segundo valor.
 
- # %%
- # Ejercicio 2
+# %%
+# Ejercicio 2
 from numpy.random import rand
 
 # b)
@@ -67,18 +71,18 @@ for n in ns:
     success = 0
     u = rand(n)
     for num in u:
-        if num < 1/2:
+        if num < 1 / 2:
             x = rand() + rand()
         else:
             x = rand() + rand() + rand()
         success += x >= 1
 
-    estimations.append(success/n)
+    estimations.append(success / n)
 
-estimations    
+estimations
 
- # %%
- # Ejercicio 3
+# %%
+# Ejercicio 3
 from numpy.random import rand
 
 # b)
@@ -88,15 +92,15 @@ for n in ns:
     success = 0
     u = rand(n)
     for num in u:
-        if num < 1/3:
+        if num < 1 / 3:
             x = rand() + rand()
         else:
             x = rand() + rand() + rand()
         success += x <= 2
 
-    estimations.append(success/n)
+    estimations.append(success / n)
 
-estimations    
+estimations
 
 # %%
 # Ejercicio 4
@@ -160,7 +164,6 @@ class WaitingTime:
             return (X3, 3)
 
 
-
 # %%
 # Probabilidades "exacta":
 # a) P(T < 4 minutos)
@@ -197,3 +200,72 @@ for i in [1, 2, 3]:
 print(f"P(Vaya a caja i | T > 4 minutos) ~ {b_aprox}")
 
 # %%
+# Ejercicio 5
+
+from numpy.random import uniform
+from numpy import pi, vectorize, log
+from statistics import mean
+import pandas as pd
+from scipy.integrate import quad
+import sympy as sp
+from IPython.display import display, Math
+
+ns = [100, 1000, 10000, 100000, 1000000]
+df = pd.DataFrame(index=ns, columns=[f"({l})" for l in list("abcdef")])
+
+
+def get_aprox(f, sizes):
+    monte_aproximations = []
+    for n in sizes:
+        monte_aprox = mean(f(uniform(size=n)))
+        monte_aproximations.append(monte_aprox)
+
+    return monte_aproximations[0] if len(sizes) == 1 else monte_aproximations
+
+def print_equality(I, y):
+    latex_str = r"{} = {} \sim {}".format(sp.latex(I), sp.latex(y), sp.latex(I.evalf()))
+    display(Math(latex_str))
+
+
+x = sp.symbols("x")
+
+# a)
+fexpr = (1 - x**2) ** (3 / 2)
+f = sp.lambdify(x, fexpr)
+I = sp.Integral(fexpr, (x, 0, 1))
+
+print("a)")
+print_equality(I, 3 * sp.pi / 16)
+
+df["(a)"] = get_aprox(f, ns)
+
+# b)
+fexpr = x / (x**2 - 1)
+I = sp.Integral(fexpr, (x, 2, 3))
+f = sp.lambdify(x, fexpr.subs(x, x + 2))
+
+print("b)")
+print_equality(I, sp.ln(sp.Rational(8, 3)) / 2)
+
+df["(b)"] = get_aprox(f, ns)
+
+# c)
+fexpr = x / ((1 + x**2) ** 2)
+I = sp.Integral(fexpr, (x, 0, sp.oo))
+f = sp.lambdify(x, fexpr.subs(x, 1 / x - 1) / (x**2))
+
+print("c)")
+print_equality(I, sp.Rational(1, 2))
+
+df["(c)"] = get_aprox(f, ns)
+
+# d)
+fexpr = sp.exp(-(x**2))
+I = sp.Integral(fexpr, (x, -sp.oo, sp.oo))
+f = sp.lambdify(x, fexpr.subs(x, -sp.ln(1 / x - 1)) / (x * (1 - x))) 
+
+print("d)")
+print_equality(I, sp.sqrt(sp.pi))
+
+df["(d)"] = get_aprox(f, ns)
+df
