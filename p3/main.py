@@ -202,6 +202,7 @@ print(f"P(Vaya a caja i | T > 4 minutos) ~ {b_aprox}")
 # %%
 # Ejercicio 5
 
+import inspect
 from numpy.random import uniform
 from numpy import log
 from statistics import mean
@@ -214,19 +215,22 @@ df = pd.DataFrame(index=ns, columns=[f"({l})" for l in list("abcdef")])
 
 
 def get_aprox(f, sizes):
+    parameter_size = len(inspect.signature(f).parameters)
     monte_aproximations = []
     for n in sizes:
-        monte_aprox = mean(f(uniform(size=n)))
+        inputs = [uniform(size=n) for _ in range(parameter_size)]
+        monte_aprox = mean(f(*inputs))
         monte_aproximations.append(monte_aprox)
 
     return monte_aproximations[0] if len(sizes) == 1 else monte_aproximations
 
 def print_equality(I, y):
-    latex_str = r"{} = {} \sim {}".format(sp.latex(I), sp.latex(y), sp.latex(I.evalf()))
+    latex_str = r"{} = {} \sim {}".format(sp.latex(I), sp.latex(y), sp.latex(I.doit().evalf()))
     display(Math(latex_str))
 
 
 x = sp.symbols("x")
+y = sp.symbols("y")
 
 # a)
 fexpr = (1 - x**2) ** (3 / 2)
@@ -267,4 +271,32 @@ print("d)")
 print_equality(I, sp.sqrt(sp.pi))
 
 df["(d)"] = get_aprox(f, ns)
+df
+
+# e)
+fexpr = sp.exp((x + y)**2)
+I = sp.Integral(fexpr, (x, 0, 1), (y, 0, 1))
+f = sp.lambdify((x, y), fexpr) 
+
+print("e)")
+print_equality(I, I.doit())
+
+df["(e)"] = get_aprox(f, ns)
+
+# f)
+def lt(y, x):
+    return y < x
+
+fexpr = sp.exp(-(x + y))
+I = sp.Integral(fexpr, (y, 0, x), (x, 0, sp.oo))
+
+adjusted_fexpr = (fexpr * sp.Piecewise((1, lt(y, x)), (0, True)))
+adjusted_fexpr = adjusted_fexpr.subs({x: (1/x)-1, y: (1/y)-1}) / (x**2 * y**2)
+f = sp.lambdify((x, y), adjusted_fexpr)
+
+print("f)")
+print_equality(I, I.doit())
+
+df["(f)"] = get_aprox(f, ns)
+
 df
