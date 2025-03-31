@@ -300,3 +300,88 @@ print_equality(I, I.doit())
 df["(f)"] = get_aprox(f, ns)
 
 df
+
+# %%
+# Ejercicio 6
+
+from numpy.random import uniform
+from statistics import mean
+
+
+def N_sample(size):
+    samp = []
+    
+    for _ in range(size):
+        i = 0
+        usum = 0
+        
+        while usum <= 1:
+            i += 1
+            usum += uniform()
+        
+        samp.append(i)
+        
+    return samp
+
+# a)
+ns = [100, 1000, 10000, 100000, 1000000]
+
+df = pd.DataFrame(index=ns, columns=["E[N]"])
+df["E[N]"] = [mean(N_sample(n)) for n in ns]
+df = df.T
+
+print(df)
+
+# %%
+# Ejercicio 7
+
+from numpy import exp
+from numpy.random import uniform
+from statistics import mean
+import pandas as pd
+
+def N_sample(size):
+    samp = []
+    em3 = exp(-3)
+    
+    for _ in range(size):
+        i = 0
+        uprod = 1
+        
+        while uprod >= em3:
+            uprod *= uniform()
+            if uprod >= em3:
+                i += 1
+        
+        samp.append(i)
+        
+    return samp
+
+def get_rel_frecuencies(sample):
+    frecuencies = {i: 0 for i in range(0, 7)}
+    
+    for x in sample:
+        if x in frecuencies.keys():
+            frecuencies[x] += 1
+        
+    return {i: value/len(sample) for i, value in frecuencies.items()}
+#%%
+# a)
+ns = [100, 1000, 10000, 100000, 1000000]
+
+df = pd.DataFrame(index=ns, columns=["E[N]"])
+df["E[N]"] = [mean(N_sample(n)) for n in ns]
+df = df.T
+
+print(df)
+
+# %%
+# b)
+n = 1000000
+
+sample = N_sample(n)
+aproximations = get_rel_frecuencies(sample)
+
+df = pd.DataFrame.from_dict(aproximations, orient='index', columns=["P(N = i)"])
+
+print(df)
