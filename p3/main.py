@@ -385,3 +385,72 @@ aproximations = get_rel_frecuencies(sample)
 df = pd.DataFrame.from_dict(aproximations, orient='index', columns=["P(N = i)"])
 
 print(df)
+
+# %%
+# Ejercicio 8
+
+from numpy.random import uniform
+from math import ceil
+
+class DiscreteUniform():
+    """
+    Clase que representa a una variable aleatoria distribuida de manera uniforme en el intervalo DISCRETO cerrado [a,b].
+    """
+    def __init__(self, a, b):
+        assert type(a) == int
+        assert type(b) == int
+        
+        self.a = a
+        self.b = b
+    
+    def sample(self, size=1):
+        samp = [ceil((self.b - (self.a - 1)) * uniform() + self.a - 1) for _ in range(size)]
+        return samp[0] if size == 1 else samp
+
+D1 = DiscreteUniform(1,6)
+D2 = DiscreteUniform(1,6)
+X1 = DiscreteUniform(1,6)
+X2 = DiscreteUniform(1,6)
+
+# a)
+import itertools
+
+combs = itertools.product(range(1,7), repeat=4)
+k = len(list(combs))
+combs = itertools.product(range(1,7), repeat=4)
+success = 0
+for comb in combs:
+    d1 = comb[0]
+    d2 = comb[1]
+    x1 = comb[2]
+    x2 = comb[3]
+
+    if d1 == 1 or d1 == 6:
+        score = 2 * d2
+    else:
+        score = x1 + x2
+
+    success += score > 6
+
+print(success/k)
+
+res = 10/18
+
+# %%
+# b)
+ns = [100000]
+estimations = []
+
+for n in ns:
+    success = 0
+    d1 = D1.sample(n)
+    for num in d1:
+        if num == 1 or num == 6:
+            score = 2 * D2.sample()
+        else:
+            score = X1.sample() + X2.sample()
+        success += score > 6
+
+    estimations.append(success / n)
+
+estimations
