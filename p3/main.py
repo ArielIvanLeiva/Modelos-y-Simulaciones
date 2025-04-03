@@ -113,7 +113,6 @@ plt.show()
 
 # %%
 # d)
-from numpy.random import randint
 import numpy as np
 
 def is_inside(point, m):
@@ -276,22 +275,22 @@ print(f"P(Vaya a caja i | T > 4 minutos) = {b_prob}")
 # a)
 T = WaitingTime()
 sample = T.sample(1000)
-a_aprox = sum(1 for num in sample if num < 4) / len(sample)
+a_est = sum(1 for num in sample if num < 4) / len(sample)
 
-print(f"\nP(T < 4 minutos) ~ {a_aprox}")
+print(f"\nP(T < 4 minutos) ~ {a_est}")
 
 # b)
 # Creo primero una muestra considerable de casos en los que T > 4 minutos
 big_sample, ids = T.sample(int(1000 / (1 - a_prob)), return_ids=True)
 sample = [(t, id) for t, id in zip(big_sample, ids) if t > 4]
 
-b_aprox = []
+b_est = []
 
 for i in [1, 2, 3]:
-    aprox = sum(1 for t, id in sample if id == i) / len(sample)
-    b_aprox.append(aprox)
+    estimation = sum(1 for t, id in sample if id == i) / len(sample)
+    b_est.append(estimation)
 
-print(f"P(Vaya a caja i | T > 4 minutos) ~ {b_aprox}")
+print(f"P(Vaya a caja i | T > 4 minutos) ~ {b_est}")
 
 # %%
 # Ejercicio 5
@@ -308,15 +307,15 @@ ns = [100, 1000, 10000, 100000, 1000000]
 df = pd.DataFrame(index=ns, columns=[f"({l})" for l in list("abcdef")])
 
 
-def get_aprox(f, sizes):
+def get_est(f, sizes):
     parameter_size = len(inspect.signature(f).parameters)
-    monte_aproximations = []
+    monte_estimations = []
     for n in sizes:
         inputs = [uniform(size=n) for _ in range(parameter_size)]
-        monte_aprox = mean(f(*inputs))
-        monte_aproximations.append(monte_aprox)
+        monte_est = mean(f(*inputs))
+        monte_estimations.append(monte_est)
 
-    return monte_aproximations[0] if len(sizes) == 1 else monte_aproximations
+    return monte_estimations[0] if len(sizes) == 1 else monte_estimations
 
 def print_equality(I, y):
     latex_str = r"{} = {} \sim {}".format(sp.latex(I), sp.latex(y), sp.latex(I.doit().evalf()))
@@ -334,7 +333,7 @@ I = sp.Integral(fexpr, (x, 0, 1))
 print("a)")
 print_equality(I, 3 * sp.pi / 16)
 
-df["(a)"] = get_aprox(f, ns)
+df["(a)"] = get_est(f, ns)
 
 # b)
 fexpr = x / (x**2 - 1)
@@ -344,7 +343,7 @@ f = sp.lambdify(x, fexpr.subs(x, x + 2))
 print("b)")
 print_equality(I, sp.ln(sp.Rational(8, 3)) / 2)
 
-df["(b)"] = get_aprox(f, ns)
+df["(b)"] = get_est(f, ns)
 
 # c)
 fexpr = x / ((1 + x**2) ** 2)
@@ -354,7 +353,7 @@ f = sp.lambdify(x, fexpr.subs(x, 1 / x - 1) / (x**2))
 print("c)")
 print_equality(I, sp.Rational(1, 2))
 
-df["(c)"] = get_aprox(f, ns)
+df["(c)"] = get_est(f, ns)
 
 # d)
 fexpr = sp.exp(-(x**2))
@@ -364,7 +363,7 @@ f = sp.lambdify(x, fexpr.subs(x, -sp.ln(1 / x - 1)) / (x * (1 - x)))
 print("d)")
 print_equality(I, sp.sqrt(sp.pi))
 
-df["(d)"] = get_aprox(f, ns)
+df["(d)"] = get_est(f, ns)
 df
 
 # e)
@@ -375,7 +374,7 @@ f = sp.lambdify((x, y), fexpr)
 print("e)")
 print_equality(I, I.doit())
 
-df["(e)"] = get_aprox(f, ns)
+df["(e)"] = get_est(f, ns)
 
 # f)
 def lt(y, x):
@@ -391,12 +390,16 @@ f = sp.lambdify((x, y), adjusted_fexpr)
 print("f)")
 print_equality(I, I.doit())
 
-df["(f)"] = get_aprox(f, ns)
+df["(f)"] = get_est(f, ns)
 
 df
 
 # %%
 # Ejercicio 6
+
+
+# %%
+# Ejercicio 7
 
 from numpy.random import uniform
 from statistics import mean
@@ -427,7 +430,7 @@ df = df.T
 print(df)
 
 # %%
-# Ejercicio 7
+# Ejercicio 8
 
 from numpy import exp
 from numpy.random import uniform
@@ -474,14 +477,14 @@ print(df)
 n = 1000000
 
 sample = N_sample(n)
-aproximations = get_rel_frecuencies(sample)
+estimations = get_rel_frecuencies(sample)
 
-df = pd.DataFrame.from_dict(aproximations, orient='index', columns=["P(N = i)"])
+df = pd.DataFrame.from_dict(estimations, orient='index', columns=["P(N = i)"])
 
 print(df)
 
 # %%
-# Ejercicio 8
+# Ejercicio 9
 
 from numpy.random import uniform
 from math import ceil
