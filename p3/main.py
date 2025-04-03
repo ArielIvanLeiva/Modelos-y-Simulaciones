@@ -396,6 +396,22 @@ df
 
 # %%
 # Ejercicio 6
+from numpy import pi
+from numpy.random import random
+import pandas as pd
+
+ns = [1000, 10000, 100000]
+df = pd.DataFrame(index=["pi"])
+
+for n in ns:
+    points = random(n).reshape((-1, 2))
+    estimation = 4*sum(1 for x, y in points if x**2+y**2 <= 1)/len(points)
+    df[n] = estimation
+    
+print(f"Estimation: {estimation}")
+print(f"pi: {pi}")
+df = df.T
+df
 
 
 # %%
