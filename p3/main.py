@@ -15,7 +15,6 @@
 # %%
 # Ejercicio 1
 
-
 def nthNums(suc_fun, seed, n):
     x = seed
     nums = [x]
@@ -45,20 +44,115 @@ secuences
 
 # %%
 # b)
-def suc_gen(a, b, m, x):
-    return (a * x + b) % m
+def suc_gen(a, c, m, x):
+    return (a * x + c) % m
 
+def calc_period(secuence):
+    first = secuence[0]
+    period = 0
+
+    for i, x in enumerate(secuence[1:]):
+        if x == first:
+            period = i
+            break
+
+    return period
+
+a = 5
+c = 31
+m = 2**5
+
+def suc_y(x):
+    return suc_gen(a, c, m, x)
+
+
+seed = 4
+secuence_x = nthNums(suc_y, seed, 1024)
+period = calc_period(secuence_x)
+
+print(f"b) {a}y+{c} mod {m} period: {period}")
+
+# Generador multiplicativo
+a = 12
+c = 0
+m = 31
+
+for p in [2, 3, 5]:
+    num = (p, a ** (30/p) % m)
+    print(num)
+    assert a ** (30/p) % m != 1
+
+def suc_x(x):
+    return suc_gen(a, c, m, x)
+
+secuence_y = nthNums(suc_x, seed, 1024)
+period = calc_period(secuence_y)
+
+print(f"b) {a}y mod {m} period: {period}")
+
+# Suma de generadores
+import numpy as np
+secuence_z = (np.array(secuence_x) + np.array(secuence_y))%(2**5)
+
+period = calc_period(secuence_z)
+
+print(f"Sum period: {period}")
+
+# Ploteo
+import matplotlib.pyplot as plt
+
+fig, axs = plt.subplots(3)
+axs[0].plot(secuence_x[:-1], secuence_x[1:], 'o', color='red')
+axs[1].plot(secuence_y[:-1], secuence_y[1:], 'o', color='blue')
+axs[2].plot(secuence_z[:-1], secuence_z[1:], 'o', color='yellow')
+
+plt.show()
+
+# c)
+# Hecho en papel :)
+
+# %%
+# d)
+from numpy.random import randint
+import numpy as np
+
+def is_inside(point, m):
+    return sum((coord-m/2)**2 for coord in point) < (m/10)**2
+
+# Randu
+
+m_randu = 2**31
+
+def randu(x):
+    return suc_gen(2**16 + 3, 0, m_randu, x)
+    #return randint(0,m_randu)
+
+u1 = randu(123123)
+
+def randu_3d_sample(n, seed=u1):
+    return np.array(nthNums(randu, seed, n))
+    
+k = 2**17*3-1
+randu_points = randu_3d_sample(k).reshape((-1,3))
+randu_estimation = sum(1 for p in randu_points if is_inside(p, m_randu))/len(randu_points)
+
+print(f"Estimated (randu): {randu_estimation}")
+
+# Alternative
+a = 7**5
+m = 2**31-1
 
 def suc(x):
-    return suc_gen(5, 4, 2**5, x)
+    return suc_gen(a, 0, m, x)
 
+alt_points = np.array(nthNums(suc, seed, k)).reshape((-1, 3))
+alt_estimation = sum(1 for p in alt_points if is_inside(p, m))/len(alt_points)
 
-seeds = [4, 50]
-secuences = [nthNums(suc, seed, 10) for seed in seeds]
-secuences
+# El valor resultante de la alternativa es más cercano al real
+print(f"Estimated (alternative): {alt_estimation}")
 
-# El período de la primer secuencia es 8
-# Y el de la segunda secuencia es 7, comenzando desde el segundo valor.
+print(f'"Real": {(4/3) * np.pi * (1/10)**3}')
+
 
 # %%
 # Ejercicio 2
