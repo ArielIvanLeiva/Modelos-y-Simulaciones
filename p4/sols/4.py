@@ -31,7 +31,7 @@ class InverseTranform():
             self.cummulative[x] = summation
         
     def p(self, x):
-        self.dictionary.get(x, 0)
+        return self.dictionary.get(x, 0)
 
     def sample(self):
         u = random()
