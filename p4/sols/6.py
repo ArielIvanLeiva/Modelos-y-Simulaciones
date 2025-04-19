@@ -42,51 +42,35 @@ def inv_sample():
     return get_sample(F)
 
 # %%
-# II) PREGUNTAR
-# def get_binomial_max(n, p):
-#     const = p/(1-p)
-#     prob = (1-p)**n
-#     k = 0
-#     cum = prob
-#     k_max = int(n*p)
-
-#     for _ in range(k_max):
-#         prob *= const*(n-k)/(k+1)
-#         k += 1
-#         cum += prob
-        
-#     return cum, prob
-
-# cum_max, bin_max = get_binomial_max(4, 0.45)
-
-# def binomial(n, p):
-#     global cum_max
-#     global bin_max
-#     const = p/(1-p)
-#     prob = bin_max
-#     cum = prob
-
-#     u = random()
+def optimized_bin(n, p):
+    p0 = (1-p)**n
+    F = p0
     
-#     if (u >= cum_max):
-#         k = int(n*p)
-#         while u >= cum:
-#             print(f"u: {u}, cum: {cum}, k: {k}")
-#             prob *= const*(n-k)/(k+1)
-#             cum += prob
-#             k += 1
-        
-#         return k-1
+    max_bin = int(n * max(p, (1-p)))
     
-#     else:
-#         k = int(n*p)
-#         while u < cum:
-#             print(f"u: {u}, cum: {cum}, k: {k}")
-#             cum -= prob
-#             prob = prob / (const*(n-k)/(k+1))
-#             k -= 1
+    for j in range(1, max_bin + 1):
+        p0 *= ((n-j+1)/j) * (p / (1-p))
+        F += p0
+
+    u = random()
+    if (u >= F):
+        j = max_bin + 1
         
-#         return k+1
+        while(u >= F):
+            p0 *= ((n-j+1)/j) * (p / (1-p))
+            F += p0
+            j += 1
+            
+        return j-1
+    else:
+        j = max_bin
+        
+        while(u < F):
+            F -= p0
+            p0 *= j/((n-j+1) * (p / (1-p)))
+            j -= 1
+            
+        return j+1
 
 
 q = [comb(4, k) * (0.45**k) * ((1 - 0.45) ** (4 - k)) for k in range(4 + 1)]
@@ -98,7 +82,8 @@ for k in range(len(q)):
 
 y_cum = get_cum(probs)
 def y_sample():
-    return get_sample(y_cum)
+    #return get_sample(y_cum) Could have been another possibility
+    return optimized_bin(4, 0.45)
 
 def reject_sample(c):
     y = y_sample()
@@ -114,7 +99,7 @@ def reject_sample(c):
 #get_rel_frecuencies([y_sample() for _ in range(10000)], range(5))
 #get_rel_frecuencies([reject_sample(c) for _ in range(100000)], range(5))
 #get_rel_frecuencies([inv_sample() for _ in range(100000)], range(5))
-
+#get_rel_frecuencies([optimized_bin(4, 0.45) for _ in range(100000)], range(5))
 # %%
 # III)
 num_of_executions = 10000
