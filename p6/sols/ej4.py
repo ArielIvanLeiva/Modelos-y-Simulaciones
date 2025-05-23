@@ -30,7 +30,7 @@ def fixed_executions(size=1000):
         mean = update_mean(oldmean, x, n)
         squad = update_scuad(squad, mean, oldmean, n)
     
-    return mean, squad
+    return mean, squad/n
 
 mean, squad = fixed_executions(1000)
 
