@@ -3,7 +3,7 @@
 from numpy.random import random
 import numpy as np
 import sympy as sp
-from iterUtils import update_mean, update_scuad
+from statutils.execution import update_mean, update_scuad
 
 # %%
 

@@ -2,7 +2,8 @@
 # Ejercicio 7
 from numpy.random import rand
 from numpy import e, exp, mean, log
-from statsUtils import get_samples, get_execution_times, probability_of
+from statutils.execution import get_samples, get_execution_times
+from statutils.analysis import probability_of
 
 def inv_sample(size):
     return exp(rand(size))

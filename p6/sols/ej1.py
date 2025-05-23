@@ -2,7 +2,7 @@
 # Ejercicio 1
 from numpy.random import rand
 from numpy import log, sqrt, cos, sin, pi
-from iterUtils import update_mean, update_scuad
+from statutils.execution import update_mean, update_scuad
 
 def polar_normal(mu=0, sigma=1, size=1):
     r_squared = -2 * log(1 - rand(size))

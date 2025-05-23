@@ -33,7 +33,7 @@ P.sample(3)
 
 # %%
 # For testing purposes
-from statsUtils import probability_of
+from statutils.analysis import probability_of
 
 t = 0.3
 n = 100000

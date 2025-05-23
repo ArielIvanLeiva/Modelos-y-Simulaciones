@@ -2,7 +2,8 @@
 # Ejercicio 8
 from numpy.random import rand
 from numpy import sqrt, array, mean
-from statsUtils import get_samples, get_execution_times, probability_of
+from statutils.execution import get_samples, get_execution_times
+from statutils.analysis import probability_of
 
 def f(x):
     if 0 <= x < 1:

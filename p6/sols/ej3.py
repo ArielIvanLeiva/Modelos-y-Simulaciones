@@ -4,7 +4,7 @@ import numpy as np
 import sympy as sp
 from numpy.random import random
 from scipy.stats import norm
-from iterUtils import update_mean, update_scuad
+from statutils.execution import update_mean, update_scuad
 import pandas as pd
 
 def montecarlo_gen(fun, sl=0.001, alpha=0.05, checkpoints={}):
@@ -91,14 +91,11 @@ pretty_print_analysis(df)
 
 # %%
 # Testeando la verdadera confiabilidad del intervalo de i
-from statistics import mean
-
-def probability_of(sample, predicate):
-    return mean(int(predicate(x)) for x in sample)
-
 sample = [montecarloi() for _ in range(100)]
 
 # %%
+from statutils.analysis import probability_of
+
 I = sp.Integral(sp.sin(x) / x, (x, sp.pi, 2*sp.pi))
 Ival = float(I.evalf())
 

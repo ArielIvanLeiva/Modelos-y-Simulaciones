@@ -2,7 +2,7 @@
 # Ejercicio 9
 from numpy.random import rand
 from numpy import exp, log, sqrt, cos, sin, pi, mean, std
-from statsUtils import get_samples
+from statutils.execution import get_samples
 
 
 # a)

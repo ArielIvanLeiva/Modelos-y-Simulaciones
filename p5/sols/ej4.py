@@ -2,7 +2,7 @@
 # Ejercicio 4
 from numpy import log
 from numpy.random import random
-from statsUtils import get_density_frecuencies
+from statutils.analysis import get_density_frecuencies
 from statistics import mean
 
 def sample():
