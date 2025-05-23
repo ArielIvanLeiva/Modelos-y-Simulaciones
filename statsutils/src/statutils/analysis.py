@@ -25,3 +25,7 @@ def get_density_frecuencies(sample):
 
 def probability_of(sample, predicate):
     return mean(int(predicate(x)) for x in sample)
+
+
+def get_ic_confidence(ics, real_value):
+    return probability_of(ics, lambda x: x[0] <= real_value <= x[1])
