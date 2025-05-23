@@ -5,45 +5,42 @@ from numpy import sqrt
 from scipy.stats import norm
 from statutils.execution import update_mean, update_scuad
 
-# c)
-print("c)")
-
-def sim_M():
-    m = 2
-
-    u0 = random()
-    u1 = random()
-
-    while u1 >= u0:
-        m += 1
-
-        u0 = u1
-        u1 = random()
-
-    return m
-
-def squad_restricted():
-    squad = 0
-    mean = sim_M()
+def sim_N():
+    sum = random()
     n = 1
-
-    while n < 100 or (sqrt(squad / n) >= 0.01):
+    
+    while sum <= 1:
         n += 1
+        sum += random()
+    
+    return n 
 
-        x = sim_M()
-
+# a) y b)
+def fixed_executions(size=1000):
+    mean = sim_N()
+    squad = 0
+    n = 1
+    
+    while n <= size:
+        n += 1
+        
+        x = sim_N()
+        
         oldmean = mean
-        mean = update_mean(mean, x, n)
+        mean = update_mean(oldmean, x, n)
         squad = update_scuad(squad, mean, oldmean, n)
+    
+    return mean, squad
 
-    return mean
+mean, squad = fixed_executions(1000)
 
-print(f"e estimation: {squad_restricted()}")
-
+print(f"a) e estimation from 1000 repetitions: {mean}")
+print(f"b) estimator sample variance from 1000 repetitions: {squad}")
+        
 # %%
 # Intervalo de confianza
 def ic_restricted(l=0.025, alpha=0.05):
-    mean = sim_M()
+    mean = sim_N()
     percentil = norm.ppf(1 - alpha / 2, 0, 1)
     squad = 0
     n = 1
@@ -52,7 +49,7 @@ def ic_restricted(l=0.025, alpha=0.05):
     while n < 100 or 2 * sqrt(squad / n) * percentil >= l:
         n += 1
 
-        x = sim_M()
+        x = sim_N()
 
         oldmean = mean
         mean = update_mean(oldmean, x, n)
@@ -64,7 +61,7 @@ iterations, mean, ic = ic_restricted()
 print("Confidence interval:")
 print(f"Total iterations: {iterations}")
 print(f"e estimation: {mean}")
-print(f"ic: {ic}")
+print(f"ic (of length {ic[1] - ic[0]}): {ic}")
 
 # %%
 # Testeando la verdadera confiabilidad del intervalo (de dos formas equivalentes)
