@@ -16,7 +16,7 @@ t = pearson_estimator(Nd.values(), pd.values())
 
 pvalue = 1-chi2(df=len(Nd)-1).cdf(t)
 
-print(f"Pearson test p-value: {pvalue}")
+print(f"Chi-squared p-value: {pvalue}")
 
 # %%
 # b)
@@ -43,7 +43,7 @@ def pvalue_estimation(Ns, ps, m, t):
     
     return num_of_greater/m
 
-print(f"b) Estimación del p-valor: {pvalue_estimation(Nd.values(), pd.values(), 1000, t)}")
+print(f"b) p-value estimation: {pvalue_estimation(Nd.values(), pd.values(), 1000, t)}")
 
 # %%
 # b) Versión optimizada (usando la distribución multinomial)
@@ -58,4 +58,4 @@ def pvalue_estimation(Ns, ps, m, t):
 
     return probability_of(samples, lambda Ms: pearson_estimator(Ms, ps) >= t)
 
-print(f"b) Estimación del p-valor (optimizada): {pvalue_estimation(Nd.values(), pd.values(), 1000, t)}")
+print(f"b) p-value estimation (optimized): {pvalue_estimation(Nd.values(), pd.values(), 1000, t)}")
