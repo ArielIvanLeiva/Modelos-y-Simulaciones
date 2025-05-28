@@ -2,12 +2,18 @@ from statistics import mean
 import matplotlib.pyplot as plt
 import numpy as np
 
-def get_rel_frecuencies(sample, keys=range(1, 10 + 1)):
+def get_frecuencies(sample, keys=range(1, 10 + 1)):
     frecuencies = {i: 0 for i in keys}
 
     for x in sample:
         if x in frecuencies.keys():
             frecuencies[x] += 1
+
+    return frecuencies
+
+
+def get_rel_frecuencies(sample, keys=range(1, 10 + 1)):
+    frecuencies = get_frecuencies(sample, keys)
 
     return {i: value / len(sample) for i, value in frecuencies.items()}
 
