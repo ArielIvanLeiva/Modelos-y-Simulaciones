@@ -45,15 +45,20 @@ def estimate_pvalue(ys, t):
     
     return pvalue_estimation
 
-estimate_pvalue(ys, d_ks)
+print(f"pvalue estimation: {estimate_pvalue(ys, d_ks)}")
 
 # %%
-ys = sorted(uniform(0, 1, 10))
-d_ks = ks_estimator(ys)
-estimate_pvalue(ys, d_ks)
+# Testeando la consistencia del test
+def get_uniform_pvalues(m):
+    l = []
+    for _ in range(m):
+        ys = sorted(uniform(0, 1, 10))
+        d_ks = ks_estimator(ys)
+        l.append(estimate_pvalue(ys, d_ks))
 
+    return l
+
+from statutils.analysis import probability_of
+print(f"Consistency test result: {probability_of(get_uniform_pvalues(100), lambda x: x < 0.05)}")
+print("Expected: arround 0.05")
 # %%
-print(ys)
-[cummulative_prob(ys, y) for y in ys]
-# [j/len(ys) - ys[j-1] for j in range(1, len(ys)+1)]
-# [abs(cummulative_prob(ys, y) - y) for y in ys]
