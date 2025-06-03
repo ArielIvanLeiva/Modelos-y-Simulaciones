@@ -8,17 +8,6 @@ ys = sorted(
     -log(1-uniform(size=30))
 )
 
-def cummulative_prob(ys, x):
-    i = 0
-    
-    while i < len(ys) and x >= ys[i]:
-        i += 1
-
-    if i < len(ys):
-        return i/len(ys)
-    else:
-        return 1
-
 def ks_estimator(ys):
     exp_rv = expon(scale=1)
     # NOTE: Este es el estimador para una variable exponencial con media 1

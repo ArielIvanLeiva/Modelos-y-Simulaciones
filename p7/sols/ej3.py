@@ -4,17 +4,6 @@ from numpy.random import uniform
 
 ys = sorted([0.12, 0.18, 0.06, 0.33, 0.72, 0.83, 0.36, 0.27, 0.77, 0.74])
 
-def cummulative_prob(ys, x):
-    i = 0
-    
-    while i < len(ys) and x >= ys[i]:
-        i += 1
-
-    if i < len(ys):
-        return i/len(ys)
-    else:
-        return 1
-
 def ks_estimator(ys):
     # NOTE: Este es el estimador para la uniforme en el [0, 1]
     max1 = max(j/len(ys) - ys[j-1] for j in range(1, len(ys)+1))

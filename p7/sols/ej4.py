@@ -7,17 +7,6 @@ ys = sorted(
     [86.0, 133.0, 75.0, 22.0, 11.0, 144.0, 78.0, 122.0, 8.0, 146.0, 33.0, 41.0, 99.0]
 )
 
-def cummulative_prob(ys, x):
-    i = 0
-    
-    while i < len(ys) and x >= ys[i]:
-        i += 1
-
-    if i < len(ys):
-        return i/len(ys)
-    else:
-        return 1
-
 def ks_estimator(ys):
     exp_rv = expon(scale=50)
     # NOTE: Este es el estimador para una variable exponencial con media 50
