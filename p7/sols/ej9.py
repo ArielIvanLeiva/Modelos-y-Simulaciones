@@ -6,7 +6,7 @@ from numpy.random import uniform
 # NOTE: No olvidar ordenar los datos
 xs = sorted([1.6, 10.3, 3.5, 13.5, 18.4, 7.7, 24.3, 10.7, 8.4, 4.9, 7.9, 12, 16.2, 6.8, 14.7])
 mean_estimation = sum(xs)/len(xs)
-expected_expon = expon(loc=mean_estimation)
+expected_expon = expon(scale=mean_estimation)
 
 def ks_estimator(xs, variable):
     # # NOTE: Este estimador está construido para una variable de distribución "variable"
@@ -48,10 +48,10 @@ def estimate_pvalue_better(ys, d_ks, original_variable):
         # NOTE: NO OLVIDAR ORDENAR
         sample = sorted(original_variable.rvs(n))
         sample_mean_estimation = sum(sample)/n
-        
-        sample_expon = expon(sample_mean_estimation)
+
+        sample_expon = expon(scale=sample_mean_estimation)
         pvalue_count += int(ks_estimator(sample, sample_expon) >= d_ks)
-   
+
     pvalue_estimation = pvalue_count/m
 
     return pvalue_estimation
